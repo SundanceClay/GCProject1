@@ -8,24 +8,19 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\penni\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\lonni\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\repos\\GCProject1\\FitnessApp\\FitnessApp.csproj",
+      "projectUniqueName": "C:\\Users\\lonni\\source\\source\\GrandCircus\\Midterm\\GCProject1\\FitnessApp\\FitnessApp.csproj",
       "projectName": "FitnessApp",
-      "projectPath": "C:\\repos\\GCProject1\\FitnessApp\\FitnessApp.csproj",
-      "packagesPath": "C:\\Users\\penni\\.nuget\\packages\\",
-      "outputPath": "C:\\repos\\GCProject1\\FitnessApp\\obj\\",
+      "projectPath": "C:\\Users\\lonni\\source\\source\\GrandCircus\\Midterm\\GCProject1\\FitnessApp\\FitnessApp.csproj",
+      "packagesPath": "C:\\Users\\lonni\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\lonni\\source\\source\\GrandCircus\\Midterm\\GCProject1\\FitnessApp\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\penni\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\lonni\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -65,7 +60,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
       }
     }
   }
