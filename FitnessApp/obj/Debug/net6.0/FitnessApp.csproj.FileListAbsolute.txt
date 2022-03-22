@@ -1,0 +1,15 @@
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/bin/Debug/net6.0/FitnessApp
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/bin/Debug/net6.0/FitnessApp.deps.json
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/bin/Debug/net6.0/FitnessApp.runtimeconfig.json
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/bin/Debug/net6.0/FitnessApp.dll
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/bin/Debug/net6.0/ref/FitnessApp.dll
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/bin/Debug/net6.0/FitnessApp.pdb
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/obj/Debug/net6.0/FitnessApp.csproj.AssemblyReference.cache
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/obj/Debug/net6.0/FitnessApp.GeneratedMSBuildEditorConfig.editorconfig
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/obj/Debug/net6.0/FitnessApp.AssemblyInfoInputs.cache
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/obj/Debug/net6.0/FitnessApp.AssemblyInfo.cs
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/obj/Debug/net6.0/FitnessApp.csproj.CoreCompileInputs.cache
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/obj/Debug/net6.0/FitnessApp.dll
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/obj/Debug/net6.0/ref/FitnessApp.dll
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/obj/Debug/net6.0/FitnessApp.pdb
+/Users/imac/Desktop/CODING/Midterm/FitnessApp/obj/Debug/net6.0/FitnessApp.genruntimeconfig.cache

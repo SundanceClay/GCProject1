@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "wGY0PM0KtZ0lEZ5U5SCW1IAF1YkB56b3eEHBt4G9xYdQLp60LCE16TFRj91AVJNJg3+eb0Y3SUwk2oSXCJ3nTw==",
+  "dgSpecHash": "MRD1q/AZLyGdA0EM+QERqZyKL4KOK+KxY+Nuf8wu4jktJUMGAI0kM/cDJqWIbTckCbbrVata5v9d0n3X0FR8iQ==",
   "success": true,
-  "projectFilePath": "C:\\repos\\GCProject1\\FitnessApp\\FitnessApp.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/Users/imac/Desktop/CODING/Midterm/FitnessApp/FitnessApp.csproj",
+  "expectedPackageFiles": [
+    "/Users/imac/.nuget/packages/newtonsoft.json/13.0.1/newtonsoft.json.13.0.1.nupkg.sha512"
+  ],
   "logs": []
 }

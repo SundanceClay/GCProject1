@@ -1,10 +1,15 @@
 ﻿using System;
 namespace FitnessApp
 {
-    public class MultiClubMember
+    public class MultiClubMember : Member
     {
-        public MultiClubMember()
+        private int _points { get; set; }
+
+
+        public override void CheckIn(Club club)
         {
+            _points++;
         }
     }
+
 }

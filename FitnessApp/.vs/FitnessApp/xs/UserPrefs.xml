@@ -1,0 +1,29 @@
+﻿<Properties StartupConfiguration="{D2944A67-A7F1-4B10-BE05-E18B8F208308}|Default">
+  <MonoDevelop.Ide.ItemProperties.FitnessApp PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="SingleClubMember.cs">
+    <Files>
+      <File FileName="Program.cs" Line="3" Column="1" />
+      <File FileName="Members.cs" Line="12" Column="16" />
+      <File FileName="SingleClubMember.cs" Line="6" Column="1" />
+      <File FileName="MultiClubMember.cs" Line="6" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="FitnessApp" expanded="True">
+            <Node name="FitnessApp" expanded="True">
+              <Node name="Dependencies" expanded="True" />
+              <Node name="SingleClubMember.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
