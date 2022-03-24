@@ -101,3 +101,4 @@ static int userChoice(int numChoices)
     while (!parsedSuccessfully);
     return userToDo;
 }
+Console.WriteLine("This is the year!");
