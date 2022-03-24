@@ -7,25 +7,57 @@ using FitnessApp;
 
 List<Club> clubList = new()
 {
-    new Club("Gratiot", "Detroit", "Michigan", "48224", "Detroit Club", "55555"),
-    new Club("Lansing", "Lansing", "Michigan", "48864", "Lansing Club", "66666"),
-    new Club("Airport Blvd", "Ann Arbor", "Michigan", "48103", "Ann Arbor Club", "77777"),
-    new Club("23 Mile Road", "Rochester Hills", "Michigan", "48307", "Rochester Club", "88888"),
+    new Club(1, "Detroit Club","1122 Gratiot Ave", "Detroit", "Michigan", "48224"),
+    new Club(2, "Lansing Club","45 Lansing Rd", "Lansing", "Michigan", "48864"),
+    new Club(3, "Ann Arbor Club","333 Airport Blvd", "Ann Arbor", "Michigan", "48103"),
+    new Club(4, "Rochester Club", "23 Mile Road", "Rochester Hills", "Michigan", "48307"),
 };
+// Display list of clubs
+foreach (Club club in clubList)
+    Console.WriteLine($"{club.id} {club.clubName}, {club.street}, {club.city}, {club.state} {club.postalCode}"); 
 
-// which club are we? We need to set a Club for the user of this program.
-string thisClubId = "55555";
-Club thisClub = new Club("Street", "City", "State", "11111", "Default Club", "0"); 
+int thisClubId = 2; // Future enhancement. Read and store club Id to file.
+int newClubId;
+// Ask user to enter this club's ID
+Console.Write($"\nWelcome Fitness Center App user. We have this club as Club Id {thisClubId}." +
+    $"\nTo change clubs, enter the new club Id here, or return to continue: ");
+// initialize current club, then set based on Club Id.
+Club thisClub = new Club(0, "Club Not Assigned", "Street", "City", "State", "11111");
+bool notValid = true;
+do
+{
+    string checkClubId = Console.ReadLine();
+    if (int.TryParse(checkClubId, out newClubId)) // if valid club id entered, use it else ask for another.
+    {
+        if ((newClubId > 1) && (newClubId <= clubList.Count))
+        {
+            thisClubId = newClubId;
+            notValid = false;
+        }
+        else
+        {
+            Console.WriteLine($"The club Id entered, {newClubId}, does not match any known clubs. Please try again: ");
+            notValid = true;
+        }
+    }
+    else
+        notValid = false; // Enter or some non-integer was entered so no need to continue.
+}
+while (notValid == true);
 
+// Now that club id is verified as valid, parse the club list and assign current club.
 foreach (var club in clubList)
 {
     if (club.id == thisClubId)
     {
-        Console.WriteLine($" {club.clubName} {club.id} - {club.street} {club.city}, {club.state} {club.postalCode}");
+        Console.WriteLine($"\n This club: {club.id} {club.clubName}, {club.street}, {club.city}, {club.state} {club.postalCode}\n");
         thisClub = club;
     }
-    else thisClub = club;
+
 }
+
+List<Member> membersList = new();
+
 
 Console.WriteLine($"Welcome to {thisClub.clubName}.");
 string yn = "y";
@@ -34,36 +66,47 @@ while (yn == "y")
     bool isNew;
     Console.WriteLine("What would you like to do?\n1. Add Members\n2. Remove Members\n" +
     "3. Display Member Information\n4. CheckIn Member\n5. Generate Member Bill/Points\n6. Exit the program.");
-    int userToDo = userChoice(4);
+    int userToDo = userChoice(6);
 
+    
     bool isSingleClub = true;
     switch (userToDo)
     {
         case 1:
             // Add Member
-            Console.WriteLine("Add Member. Single Club or Multi-Club? s or m");
-            if (Console.ReadLine().ToLower() == "s")
-                isSingleClub = true; // Is Single Club membership vs multi-club membership.
+            Console.WriteLine("Add Member.\nPlease enter full name of new member: ");
+            string fullname = Console.ReadLine();
+            int lastId;
+            try
+            {
+                lastId = membersList[membersList.Count-1].Id;
+            }
+            catch (Exception ex)
+            {
+                lastId = 1;
+            }
+            Console.WriteLine("Single Club or Multi-Club? s or m");
+            
+                if (Console.ReadLine().ToLower() == "s")
+                membersList.Add(new SingleClubMember(lastId +1, fullname, thisClub.id));
             else
-                isSingleClub = false;
-
-            if (isSingleClub)
-                FitnessApp.Member.SingleClubMember().AddMember();
-            carList.Add(CarLotApp.AddCar(isNew));
+                membersList.Add(new MultiClubMember(lastId + 1, fullname));
+                
+          /*  carList.Add(CarLotApp.AddCar(isNew)); */
             break;
         case 2:
             // Remove Member
-            removeMember(memberList, member);
-            Console.WriteLine($"{member} has been removed.");
+          /*  removeMember(memberList, member);
+            Console.WriteLine($"{member} has been removed.");*/
 
             break;
         case 3:
             // Display Member Information
-            CarLotApp.ListCars(carList);
+          /*  CarLotApp.ListCars(carList);
             int buyCar;
             bool intYes = int.TryParse(Console.ReadLine(), out buyCar);
             if (intYes && buyCar <= carList.Count)
-                carList = CarLotApp.BuyCar(buyCar, carList);
+                carList = CarLotApp.BuyCar(buyCar, carList);*/
             break;
 
         case 4:
@@ -80,7 +123,6 @@ while (yn == "y")
             break;
     }
 }
-
 
 
 static int userChoice(int numChoices)
