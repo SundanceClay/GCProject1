@@ -3,7 +3,7 @@ using Xunit;
 
 namespace FitnessAppTests
 {
-    public class UnitTest1
+    public class CheckMultiPointsTest
     {
         [Fact]
         public void CheckinMultiMemberIncreasePoints()

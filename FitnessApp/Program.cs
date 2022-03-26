@@ -4,6 +4,8 @@
 
 //Enter information about the clubs (Street, city, state, postalcode, clubname, id)
 using FitnessApp;
+using Newtonsoft.Json;
+using System.Text.Json;
 
 List<Club> clubList = new()
 {
@@ -29,7 +31,7 @@ do
     string checkClubId = Console.ReadLine();
     if (int.TryParse(checkClubId, out newClubId)) // if valid club id entered, use it else ask for another.
     {
-        if ((newClubId > 1) && (newClubId <= clubList.Count))
+        if ((newClubId >= 1) && (newClubId <= clubList.Count))
         {
             thisClubId = newClubId;
             notValid = false;
@@ -68,12 +70,13 @@ while (yn == "y")
     "3. Display Member Information\n4. CheckIn Member\n5. Generate Member Bill/Points\n6. Exit the program.");
     int userToDo = userChoice(6);
 
-    
+    membersList = ReadMemberListFromFile();
     bool isSingleClub = true;
     switch (userToDo)
     {
         case 1:
             // Add Member
+            
             Console.WriteLine("Add Member.\nPlease enter full name of new member: ");
             string fullname = Console.ReadLine();
             int lastId;
@@ -91,7 +94,7 @@ while (yn == "y")
                 membersList.Add(new SingleClubMember(lastId +1, fullname, thisClub.id));
             else
                 membersList.Add(new MultiClubMember(lastId + 1, fullname));
-                
+            WriteMemberListToFile(membersList);
           /*  carList.Add(CarLotApp.AddCar(isNew)); */
             break;
         case 2:
@@ -102,11 +105,17 @@ while (yn == "y")
             break;
         case 3:
             // Display Member Information
-          /*  CarLotApp.ListCars(carList);
-            int buyCar;
-            bool intYes = int.TryParse(Console.ReadLine(), out buyCar);
-            if (intYes && buyCar <= carList.Count)
-                carList = CarLotApp.BuyCar(buyCar, carList);*/
+            Console.WriteLine();
+            foreach (Member member in membersList)
+            {
+                Console.WriteLine($"{member.Id} {member.Name}");
+            }
+            Console.WriteLine();
+            /*  CarLotApp.ListCars(carList);
+              int buyCar;
+              bool intYes = int.TryParse(Console.ReadLine(), out buyCar);
+              if (intYes && buyCar <= carList.Count)
+                  carList = CarLotApp.BuyCar(buyCar, carList);*/
             break;
 
         case 4:
@@ -121,6 +130,46 @@ while (yn == "y")
         default:
 
             break;
+    }
+}
+
+static List<Member> WriteMemberListToFile(List<Member> membersList)
+{
+    Newtonsoft.Json.JsonSerializer serializer = new Newtonsoft.Json.JsonSerializer();
+    serializer.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
+    serializer.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+    serializer.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+    serializer.Formatting = Newtonsoft.Json.Formatting.Indented;
+
+    string membersFile = @"C:\repos\memberlist.json";
+    using (StreamWriter writer = new StreamWriter(membersFile))
+    using (Newtonsoft.Json.JsonWriter jWriter = new Newtonsoft.Json.JsonTextWriter(writer)) 
+    {
+        serializer.Serialize(jWriter, membersList);
+        writer.Close();
+    } 
+
+    return membersList;
+}
+
+static List<Member> ReadMemberListFromFile()
+{
+    string jsonString;
+    string membersFile = @"C:\repos\memberlist.json";
+    if (!File.Exists(membersFile)) // Check if the membersFile exists or create it if it doesn't.
+    {
+        File.Create(membersFile).Close();
+        Console.WriteLine("Member file did not exist, but was created. You can now add members.\n");
+        return new List<Member>();
+    }
+    else // No need to read if the file is brand new and empty.
+    {
+        List<Member> myMemberList = JsonConvert.DeserializeObject<List<Member>>(File.ReadAllText(membersFile), new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.All,
+            NullValueHandling = NullValueHandling.Ignore,
+        });
+        return myMemberList;
     }
 }
 
