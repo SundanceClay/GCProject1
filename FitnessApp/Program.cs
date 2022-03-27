@@ -14,38 +14,20 @@ List<Club> clubList = new()
     new Club(3, "Ann Arbor Club","333 Airport Blvd", "Ann Arbor", "Michigan", "48103"),
     new Club(4, "Rochester Club", "23 Mile Road", "Rochester Hills", "Michigan", "48307"),
 };
-// Display list of clubs
-foreach (Club club in clubList)
-    Console.WriteLine($"{club.id} {club.clubName}, {club.street}, {club.city}, {club.state} {club.postalCode}"); 
+
+DisplayClubList(clubList);
+
 
 int thisClubId = 2; // Future enhancement. Read and store club Id to file.
-int newClubId;
+
 // Ask user to enter this club's ID
 Console.Write($"\nWelcome Fitness Center App user. We have this club as Club Id {thisClubId}." +
     $"\nTo change clubs, enter the new club Id here, or return to continue: ");
-// initialize current club, then set based on Club Id.
+
+thisClubId = WhichClub(thisClubId, clubList);
+
+// initialize default club, then set chosen club based on Club Id.
 Club thisClub = new Club(0, "Club Not Assigned", "Street", "City", "State", "11111");
-bool notValid = true;
-do
-{
-    string checkClubId = Console.ReadLine();
-    if (int.TryParse(checkClubId, out newClubId)) // if valid club id entered, use it else ask for another.
-    {
-        if ((newClubId >= 1) && (newClubId <= clubList.Count))
-        {
-            thisClubId = newClubId;
-            notValid = false;
-        }
-        else
-        {
-            Console.WriteLine($"The club Id entered, {newClubId}, does not match any known clubs. Please try again: ");
-            notValid = true;
-        }
-    }
-    else
-        notValid = false; // Enter or some non-integer was entered so no need to continue.
-}
-while (notValid == true);
 
 // Now that club id is verified as valid, parse the club list and assign current club.
 foreach (var club in clubList)
@@ -86,31 +68,41 @@ while (yn == "y")
             }
             catch (Exception ex)
             {
-                lastId = 1;
+                lastId = 0;
             }
             Console.WriteLine("Single Club or Multi-Club? s or m");
             
                 if (Console.ReadLine().ToLower() == "s")
-                membersList.Add(new SingleClubMember(lastId +1, fullname, thisClub.id));
+                {
+                    DisplayClubList(clubList);
+                    Console.WriteLine($"\nWhich club does the new Single Club member choose? (Press Enter for current club #{thisClubId}, or choose club id: ");
+                    int chosenClubId = WhichClub(thisClubId, clubList);
+                    membersList.Add(new SingleClubMember(lastId +1, fullname, chosenClubId)); 
+                }
             else
                 membersList.Add(new MultiClubMember(lastId + 1, fullname));
             WriteMemberListToFile(membersList);
+            Console.WriteLine($"\nNew member {membersList.Last().Name} was added.\n");
           /*  carList.Add(CarLotApp.AddCar(isNew)); */
             break;
         case 2:
             // Remove Member
-          /*  removeMember(memberList, member);
-            Console.WriteLine($"{member} has been removed.");*/
-
+            
+            Console.WriteLine($"\nRemove member.");
+            int memberIdToRemove = ChooseMember(membersList);
+            if (!(memberIdToRemove == 0)) // if 0 returned from ChooseMember, user wants to exit to main menu.
+            { 
+                Member memberToRemove = membersList.Where(x => x.Id == memberIdToRemove).First();
+                membersList.Remove(memberToRemove);
+                Console.WriteLine($"{memberToRemove.Name} has been removed.\n");
+                WriteMemberListToFile(membersList);
+            }
             break;
         case 3:
             // Display Member Information
-            Console.WriteLine();
-            foreach (Member member in membersList)
-            {
-                Console.WriteLine($"{member.Id} {member.Name}");
-            }
-            Console.WriteLine();
+            
+            DisplayMembers(membersList);
+            
             /*  CarLotApp.ListCars(carList);
               int buyCar;
               bool intYes = int.TryParse(Console.ReadLine(), out buyCar);
@@ -131,6 +123,87 @@ while (yn == "y")
 
             break;
     }
+}
+
+static int ChooseMember(List<Member> membersList)
+{
+    int memberId = 0;
+    bool notValid = true;
+    do
+    {
+        Console.WriteLine($"\nEnter member id, or 0 to see the complete list of members, or q to return to main menu: ");
+        string idOrList = Console.ReadLine();
+
+        if (int.TryParse(idOrList, out memberId)) // if valid member id entered (i.e. its an integer and not 0, use it else ask for another.
+        {
+            if (memberId == 0)
+            {
+                DisplayMembers(membersList);
+                notValid = true;
+            }
+            else if (membersList.Contains(membersList.Where(x => x.Id == memberId).FirstOrDefault()))
+            {
+                notValid = false;
+            }
+            else
+            {
+                Console.WriteLine($"The member Id entered, {memberId}, does not match any members on the list. Please try again. ");
+                notValid = true;
+            }
+        }
+        else
+        {
+            if (idOrList == "q") // if user changes mind and wants to return to main menu without choosing.
+                notValid = false;
+            else
+            notValid = true; // Enter key or some non-integer was entered so need to continue loop.
+        }
+    }
+    while (notValid == true);
+    return memberId;
+}
+
+    static void DisplayMembers(List<Member> membersList)
+{
+    Console.WriteLine();
+    foreach (Member member in membersList)
+    {
+        Console.WriteLine($"{member.Id} {member.Name}");
+    }
+    Console.WriteLine();
+}
+
+static void DisplayClubList(List<Club> clubList) 
+{ 
+    foreach (Club club in clubList)
+        Console.WriteLine($"{club.id} {club.clubName}, {club.street}, {club.city}, {club.state} {club.postalCode}");
+}
+
+static int WhichClub(int thisClubId, List<Club> clubList)
+{
+    int newClubId;
+    bool notValid = true;
+    do
+    {
+        string checkClubId = Console.ReadLine();
+        if (int.TryParse(checkClubId, out newClubId)) // if valid club id entered, use it else ask for another.
+        {
+            if ((newClubId >= 1) && (newClubId <= clubList.Count))
+            {
+                thisClubId = newClubId;
+                notValid = false;
+            }
+            else
+            {
+                Console.WriteLine($"The club Id entered, {newClubId}, does not match any known clubs. Please try again: ");
+                notValid = true;
+            }
+        }
+        else
+            notValid = false; // Enter or some non-integer was entered so no need to continue.
+    }
+    while (notValid == true);
+    return thisClubId;
 }
 
 static List<Member> WriteMemberListToFile(List<Member> membersList)
