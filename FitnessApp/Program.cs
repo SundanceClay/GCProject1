@@ -48,8 +48,8 @@ string yn = "y";
 while (yn == "y")
 {
     bool isNew;
-    Console.WriteLine("What would you like to do?\n1. Add Members\n2. Remove Members\n" +
-    "3. Display Member Information\n4. CheckIn Member\n5. Generate Member Bill/Points\n6. Exit the program.");
+    Console.Write("\n1. Add Members\n2. Remove Members\n" +
+    "3. Display Member Information\n4. CheckIn Member\n5. Generate Member Bill/Points\n6. Exit the program.\n\nWhat would you like to do? ");
     int userToDo = userChoice(6);
 
     membersList = ReadMemberListFromFile();
@@ -78,7 +78,7 @@ while (yn == "y")
                 if (Console.ReadLine().ToLower() == "s")
                 {
                     DisplayClubList(clubList);
-                    Console.WriteLine($"\nWhich club does the new Single Club member choose? (Press Enter for current club #{thisClubId}, or choose club id: ");
+                    Console.Write($"\nWhich club does the new Single Club member choose?\n(Press Enter for current club #{thisClubId}, or choose club id): ");
                     int chosenClubId = WhichClub(thisClubId, clubList);
                 membersList.Add(new SingleClubMember(lastId + 1, fullname, chosenClubId));  
                 }
@@ -125,12 +125,6 @@ while (yn == "y")
                    
                 
             }
-
-            /*  CarLotApp.ListCars(carList);
-              int buyCar;
-              bool intYes = int.TryParse(Console.ReadLine(), out buyCar);
-              if (intYes && buyCar <= carList.Count)
-                  carList = CarLotApp.BuyCar(buyCar, carList);*/
             break;
 
         case 4:
@@ -138,9 +132,28 @@ while (yn == "y")
             break;
         case 5:
             // Generate member Bill/Points
+            Console.WriteLine($"\nGenerate Bill includings Points.");
+            int memberId = ChooseMember(membersList);
+            if (!(memberId == 0)) // if 0 returned from ChooseMember, user wants to exit to main menu.
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Member member = membersList.Where(x => x.Id == memberId).First();
+                if (member.GetType() == typeof(SingleClubMember))
+                {
+                    SingleClubMember member2 = member as SingleClubMember;
+                    Console.WriteLine($"{member.Id} {member.Name}\nMember of Club #{member2.GetAssignedClubId()}\nMonthly Single Club Bill: $20.00");
+                }
+                else
+                {
+                    MultiClubMember member3 = member as MultiClubMember;
+                    Console.WriteLine($"{member.Id} {member.Name}\nMulti-Club Member Points Accumulated: {member3.GetPoints()}\nMonthly Multi-Club Bill: $30.00");
+                }
+            }
+            Console.ForegroundColor = ConsoleColor.White;
             break;
         case 6:
             yn = "n";
+            Console.WriteLine("Thank you for using Fitness Center App. Now Exiting...\n\n");
             break;
         default:
 
@@ -154,9 +167,9 @@ static int ChooseMember(List<Member> membersList)
     bool notValid = true;
     do
     {
-        Console.WriteLine($"\nEnter member id, or 0 to see the complete list of members, or q to return to main menu: ");
+        Console.Write($"\nEnter member id,\n0 to see the complete list of members,\nor q to return to main menu: ");
         string idOrList = Console.ReadLine();
-
+        Console.WriteLine();
         if (int.TryParse(idOrList, out memberId)) // if valid member id entered (i.e. its an integer and not 0, use it else ask for another.
         {
             if (memberId == 0)
@@ -170,7 +183,9 @@ static int ChooseMember(List<Member> membersList)
             }
             else
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"The member Id entered, {memberId}, does not match any members on the list. Please try again. ");
+                Console.ForegroundColor = ConsoleColor.White;
                 notValid = true;
             }
         }
@@ -218,7 +233,7 @@ static int WhichClub(int thisClubId, List<Club> clubList)
             }
             else
             {
-                Console.WriteLine($"The club Id entered, {newClubId}, does not match any known clubs. Please try again: ");
+                Console.WriteLine($"\nThe club Id entered, {newClubId}, does not match any known clubs. Please try again: ");
                 notValid = true;
             }
         }
@@ -226,6 +241,7 @@ static int WhichClub(int thisClubId, List<Club> clubList)
             notValid = false; // Enter or some non-integer was entered so no need to continue.
     }
     while (notValid == true);
+    Console.WriteLine();
     return thisClubId;
 }
 
@@ -234,7 +250,7 @@ static List<Member> WriteMemberListToFile(List<Member> membersList)
     Newtonsoft.Json.JsonSerializer serializer = new Newtonsoft.Json.JsonSerializer();
     serializer.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
     serializer.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-    serializer.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+    serializer.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects;
     serializer.Formatting = Newtonsoft.Json.Formatting.Indented;
 
     string membersFile = @"C:\repos\memberlist.json";
@@ -286,5 +302,6 @@ static int userChoice(int numChoices)
         }
     }
     while (!parsedSuccessfully);
+    Console.WriteLine();
     return userToDo;
 }
