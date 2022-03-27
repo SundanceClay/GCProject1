@@ -247,19 +247,23 @@ static int WhichClub(int thisClubId, List<Club> clubList)
 
 static List<Member> WriteMemberListToFile(List<Member> membersList)
 {
-    Newtonsoft.Json.JsonSerializer serializer = new Newtonsoft.Json.JsonSerializer();
+    /* Newtonsoft.Json.JsonSerializer serializer = new Newtonsoft.Json.JsonSerializer();
     serializer.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
     serializer.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-    serializer.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Objects;
-    serializer.Formatting = Newtonsoft.Json.Formatting.Indented;
+    serializer.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
+    serializer.Formatting = Newtonsoft.Json.Formatting.Indented; */
 
     string membersFile = @"C:\repos\memberlist.json";
-    using (StreamWriter writer = new StreamWriter(membersFile))
+    /* using (StreamWriter writer = new StreamWriter(membersFile))
     using (Newtonsoft.Json.JsonWriter jWriter = new Newtonsoft.Json.JsonTextWriter(writer)) 
     {
         serializer.Serialize(jWriter, membersList);
         writer.Close();
-    } 
+    } */
+    JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+    string json = JsonConvert.SerializeObject(membersList, settings);
+
+    File.WriteAllText(membersFile, json);
 
     return membersList;
 }
@@ -276,11 +280,13 @@ static List<Member> ReadMemberListFromFile()
     }
     else // No need to read if the file is brand new and empty.
     {
-        List<Member> myMemberList = JsonConvert.DeserializeObject<List<Member>>(File.ReadAllText(membersFile), new JsonSerializerSettings
-        {
+        JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+
+        List<Member> myMemberList = JsonConvert.DeserializeObject<List<Member>>(File.ReadAllText(membersFile), settings);
+       /* {
             TypeNameHandling = TypeNameHandling.All,
             NullValueHandling = NullValueHandling.Ignore,
-        });
+        }); */
         return myMemberList;
     }
 }
