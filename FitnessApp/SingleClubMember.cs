@@ -30,5 +30,10 @@ namespace FitnessApp
             }
         }
 
+        public int GetAssignedClubId()
+        {
+            return _assignedClubId;
+        }
+
     }
 }

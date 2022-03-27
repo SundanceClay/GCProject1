@@ -61,6 +61,8 @@ while (yn == "y")
             
             Console.WriteLine("Add Member.\nPlease enter full name of new member: ");
             string fullname = Console.ReadLine();
+
+            // Establish the id of the member at the end of the list for adding a new member after that.
             int lastId;
             try
             {
@@ -70,6 +72,7 @@ while (yn == "y")
             {
                 lastId = 0;
             }
+
             Console.WriteLine("Single Club or Multi-Club? s or m");
             
                 if (Console.ReadLine().ToLower() == "s")
@@ -77,10 +80,13 @@ while (yn == "y")
                     DisplayClubList(clubList);
                     Console.WriteLine($"\nWhich club does the new Single Club member choose? (Press Enter for current club #{thisClubId}, or choose club id: ");
                     int chosenClubId = WhichClub(thisClubId, clubList);
-                    membersList.Add(new SingleClubMember(lastId +1, fullname, chosenClubId)); 
+                membersList.Add(new SingleClubMember(lastId + 1, fullname, chosenClubId));  
                 }
             else
-                membersList.Add(new MultiClubMember(lastId + 1, fullname));
+            {
+                MultiClubMember member2 = new MultiClubMember(lastId + 1, fullname);
+                membersList.Add(member2);
+            }
             WriteMemberListToFile(membersList);
             Console.WriteLine($"\nNew member {membersList.Last().Name} was added.\n");
           /*  carList.Add(CarLotApp.AddCar(isNew)); */
@@ -88,7 +94,7 @@ while (yn == "y")
         case 2:
             // Remove Member
             
-            Console.WriteLine($"\nRemove member.");
+            Console.WriteLine($"\nRemove Member from Member List.");
             int memberIdToRemove = ChooseMember(membersList);
             if (!(memberIdToRemove == 0)) // if 0 returned from ChooseMember, user wants to exit to main menu.
             { 
@@ -100,9 +106,26 @@ while (yn == "y")
             break;
         case 3:
             // Display Member Information
-            
-            DisplayMembers(membersList);
-            
+            Console.WriteLine($"\nDisplay Member Information.");
+            int memberIdToDisplay = ChooseMember(membersList);
+            if (!(memberIdToDisplay == 0)) // if 0 returned from ChooseMember, user wants to exit to main menu.
+            {
+                Member member = membersList.Where(x => x.Id == memberIdToDisplay).First();
+                if (member.GetType() == typeof(SingleClubMember))
+                {
+                    SingleClubMember member2 = member as SingleClubMember;
+                    Console.WriteLine($"{member.Id} {member.Name} {member2.GetAssignedClubId()}");
+                }
+                else
+                {
+                    MultiClubMember member3 = member as MultiClubMember;
+                    Console.WriteLine($"{member.Id} {member.Name} {member3.GetPoints()}");
+                }
+                    
+                   
+                
+            }
+
             /*  CarLotApp.ListCars(carList);
               int buyCar;
               bool intYes = int.TryParse(Console.ReadLine(), out buyCar);
