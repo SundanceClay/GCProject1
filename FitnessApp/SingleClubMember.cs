@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace FitnessApp
 {
     internal class SingleClubMember : Member
     {
+        [JsonProperty("_assignedClubId")]
         private int _assignedClubId;
         public SingleClubMember(int id, string name, int assignedClubId) : base(id, name)
         {
@@ -28,6 +30,11 @@ namespace FitnessApp
                 if (_assignedClubId != club.id)
                     Console.WriteLine("You're in the wrong club.");
             }
+        }
+
+        public int GetAssignedClubId()
+        {
+            return _assignedClubId;
         }
 
     }
