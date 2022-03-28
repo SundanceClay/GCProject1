@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace FitnessApp
 {
-    internal class SingleClubMember : Member
+    public class SingleClubMember : Member
     {
         private int _assignedClubId;
+
+
         public SingleClubMember(int id, string name, int assignedClubId) : base(id, name)
         {
             Id = id;

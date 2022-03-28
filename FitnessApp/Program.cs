@@ -1,6 +1,6 @@
 ﻿// Main execution for Fitness Center Midterm Project with Team: Jake Jones, Lonnie Johnson, and Shawn Penning.
 // This is primarily bullet 4 from Fitness Center Requirements assigned to Shawn but also bullet 5 assigned to Lonnie
-//Create a list of 4 fitness center loacations 
+//Create a list of 4 fitness center locations 
 
 //Enter information about the clubs (Street, city, state, postalcode, clubname, id)
 using FitnessApp;
