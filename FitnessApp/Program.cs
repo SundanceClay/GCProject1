@@ -21,8 +21,10 @@ DisplayClubList(clubList);
 int thisClubId = 2; // Future enhancement. Read and store club Id to file.
 
 // Ask user to enter this club's ID
+Console.ForegroundColor = ConsoleColor.Yellow;
 Console.Write($"\nWelcome Fitness Center App user. We have this club as Club Id {thisClubId}." +
     $"\nTo change clubs, enter the new club Id here, or return to continue: ");
+Console.ForegroundColor = ConsoleColor.White;
 
 thisClubId = WhichClub(thisClubId, clubList);
 
@@ -42,14 +44,16 @@ foreach (var club in clubList)
 
 List<Member> membersList = new();
 
-
 Console.WriteLine($"Welcome to {thisClub.clubName}.");
 string yn = "y";
 while (yn == "y")
 {
     bool isNew;
     Console.Write("\n1. Add Members\n2. Remove Members\n" +
-    "3. Display Member Information\n4. CheckIn Member\n5. Generate Member Bill/Points\n6. Exit the program.\n\nWhat would you like to do? ");
+    "3. Display Member Information\n4. CheckIn Member\n5. Generate Member Bill/Points\n6. Exit the program.");
+    Console.ForegroundColor = ConsoleColor.Yellow;
+    Console.Write("\n\nWhat would you like to do?");
+    Console.ForegroundColor = ConsoleColor.White;
     int userToDo = userChoice(6);
 
     membersList = ReadMemberListFromFile();
@@ -75,13 +79,13 @@ while (yn == "y")
 
             Console.WriteLine("Single Club or Multi-Club? s or m");
             
-                if (Console.ReadLine().ToLower() == "s")
-                {
-                    DisplayClubList(clubList);
-                    Console.Write($"\nWhich club does the new Single Club member choose?\n(Press Enter for current club #{thisClubId}, or choose club id): ");
-                    int chosenClubId = WhichClub(thisClubId, clubList);
-                membersList.Add(new SingleClubMember(lastId + 1, fullname, chosenClubId));  
-                }
+            if (Console.ReadLine().ToLower() == "s")
+            {
+                DisplayClubList(clubList);
+                Console.Write($"\nWhich club does the new Single Club member choose?\n(Press Enter for current club #{thisClubId}, or choose club id): ");
+                int chosenClubId = WhichClub(thisClubId, clubList);
+            membersList.Add(new SingleClubMember(lastId + 1, fullname, chosenClubId));  
+            }
             else
             {
                 MultiClubMember member2 = new MultiClubMember(lastId + 1, fullname);
@@ -114,12 +118,16 @@ while (yn == "y")
                 if (member.GetType() == typeof(SingleClubMember))
                 {
                     SingleClubMember member2 = member as SingleClubMember;
-                    Console.WriteLine($"{member.Id} {member.Name} {member2.GetAssignedClubId()}");
+                    Console.ForegroundColor = ConsoleColor.Blue; 
+                    Console.WriteLine($"Id:{member.Id} Name:{member.Name} Club#:{member2.GetAssignedClubId()}");
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
                 else
                 {
                     MultiClubMember member3 = member as MultiClubMember;
-                    Console.WriteLine($"{member.Id} {member.Name} {member3.GetPoints()}");
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine($"Id:{member.Id} Name:{member.Name} Club#:{member3.GetPoints()}");
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
                     
                    
@@ -129,7 +137,18 @@ while (yn == "y")
 
         case 4:
             // CheckIn Member
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"\nCheck in. What member would you like to check in? ");
+            Console.ForegroundColor = ConsoleColor.White;
+            int checkInMemberId = ChooseMember(membersList);
+            if (!(checkInMemberId == 0)) // if 0 returned from ChooseMember, user wants to exit to main menu.
+            {
+                Member member = membersList.Where(x => x.Id == checkInMemberId).First();
+                member.CheckIn(thisClub);
+            }
+            WriteMemberListToFile(membersList);
             break;
+
         case 5:
             // Generate member Bill/Points
             Console.WriteLine($"\nGenerate Bill includings Points.");
@@ -159,7 +178,10 @@ while (yn == "y")
 
             break;
     }
+    
 }
+WriteMemberListToFile(membersList);
+
 
 static int ChooseMember(List<Member> membersList)
 {
@@ -167,7 +189,9 @@ static int ChooseMember(List<Member> membersList)
     bool notValid = true;
     do
     {
+        Console.ForegroundColor = ConsoleColor.Yellow;
         Console.Write($"\nEnter member id,\n0 to see the complete list of members,\nor q to return to main menu: ");
+        Console.ForegroundColor = ConsoleColor.White;
         string idOrList = Console.ReadLine();
         Console.WriteLine();
         if (int.TryParse(idOrList, out memberId)) // if valid member id entered (i.e. its an integer and not 0, use it else ask for another.
@@ -247,19 +271,8 @@ static int WhichClub(int thisClubId, List<Club> clubList)
 
 static List<Member> WriteMemberListToFile(List<Member> membersList)
 {
-    /* Newtonsoft.Json.JsonSerializer serializer = new Newtonsoft.Json.JsonSerializer();
-    serializer.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
-    serializer.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-    serializer.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
-    serializer.Formatting = Newtonsoft.Json.Formatting.Indented; */
-
     string membersFile = @"C:\repos\memberlist.json";
-    /* using (StreamWriter writer = new StreamWriter(membersFile))
-    using (Newtonsoft.Json.JsonWriter jWriter = new Newtonsoft.Json.JsonTextWriter(writer)) 
-    {
-        serializer.Serialize(jWriter, membersList);
-        writer.Close();
-    } */
+
     JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
     string json = JsonConvert.SerializeObject(membersList, settings);
 
@@ -283,10 +296,7 @@ static List<Member> ReadMemberListFromFile()
         JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
 
         List<Member> myMemberList = JsonConvert.DeserializeObject<List<Member>>(File.ReadAllText(membersFile), settings);
-       /* {
-            TypeNameHandling = TypeNameHandling.All,
-            NullValueHandling = NullValueHandling.Ignore,
-        }); */
+
         return myMemberList;
     }
 }

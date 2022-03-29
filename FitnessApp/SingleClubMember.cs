@@ -27,8 +27,19 @@ namespace FitnessApp
             }
             else
             {
-                if (_assignedClubId != club.id)
+                if (_assignedClubId != club.id) 
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("You're in the wrong club.");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+
+                else 
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Member is now Checked In.");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
             }
         }
 
