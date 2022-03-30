@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FitnessApp
 {
-    internal class SingleClubMember : Member
+    public class SingleClubMember : Member
     {
         [JsonProperty("_assignedClubId")]
         private int _assignedClubId;
