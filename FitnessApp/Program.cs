@@ -7,15 +7,10 @@ using FitnessApp;
 using Newtonsoft.Json;
 using System.Text.Json;
 
-List<Club> clubList = new()
-{
-    new Club(1, "Detroit Club","1122 Gratiot Ave", "Detroit", "Michigan", "48224"),
-    new Club(2, "Lansing Club","45 Lansing Rd", "Lansing", "Michigan", "48864"),
-    new Club(3, "Ann Arbor Club","333 Airport Blvd", "Ann Arbor", "Michigan", "48103"),
-    new Club(4, "Rochester Club", "23 Mile Road", "Rochester Hills", "Michigan", "48307"),
-};
 
-DisplayClubList(clubList);
+
+
+ClubList.DisplayClubList(ClubList.clubList);
 
 
 int thisClubId = 2; // Future enhancement. Read and store club Id to file.
@@ -26,37 +21,30 @@ Console.Write($"\nWelcome Fitness Center App user. We have this club as Club Id 
     $"\nTo change clubs, enter the new club Id here, or return to continue: ");
 Console.ForegroundColor = ConsoleColor.White;
 
-thisClubId = WhichClub(thisClubId, clubList);
-
-// initialize default club, then set chosen club based on Club Id.
-Club thisClub = new Club(0, "Club Not Assigned", "Street", "City", "State", "11111");
+thisClubId = ClubList.WhichClub(thisClubId, ClubList.clubList);
 
 // Now that club id is verified as valid, parse the club list and assign current club.
-foreach (var club in clubList)
-{
-    if (club.id == thisClubId)
-    {
-        Console.WriteLine($"\n This club: {club.id} {club.clubName}, {club.street}, {club.city}, {club.state} {club.postalCode}\n");
-        thisClub = club;
-    }
-
-}
+var club = ClubList.clubList.FirstOrDefault(x => x.id == thisClubId);
+Console.WriteLine($"\n This club: {club.id} {club.clubName}, {club.street}, {club.city}, {club.state} {club.postalCode}\n");
+Club thisClub = club;
 
 List<Member> membersList = new();
 
 Console.WriteLine($"Welcome to {thisClub.clubName}.");
+
+membersList = Repository.ReadMemberListFromFile();
+
 string yn = "y";
 while (yn == "y")
 {
-    bool isNew;
     Console.Write("\n1. Add Members\n2. Remove Members\n" +
     "3. Display Member Information\n4. CheckIn Member\n5. Generate Member Bill/Points\n6. Exit the program.");
     Console.ForegroundColor = ConsoleColor.Yellow;
-    Console.Write("\n\nWhat would you like to do?");
+    Console.Write("\n\nWhat would you like to do? ");
     Console.ForegroundColor = ConsoleColor.White;
-    int userToDo = userChoice(6);
+    int userToDo = Main.userChoice(6);
 
-    membersList = ReadMemberListFromFile();
+    
     bool isSingleClub = true;
     switch (userToDo)
     {
@@ -81,9 +69,9 @@ while (yn == "y")
             
             if (Console.ReadLine().ToLower() == "s")
             {
-                DisplayClubList(clubList);
+                ClubList.DisplayClubList(ClubList.clubList);
                 Console.Write($"\nWhich club does the new Single Club member choose?\n(Press Enter for current club #{thisClubId}, or choose club id): ");
-                int chosenClubId = WhichClub(thisClubId, clubList);
+                int chosenClubId = ClubList.WhichClub(thisClubId, ClubList.clubList);
             membersList.Add(new SingleClubMember(lastId + 1, fullname, chosenClubId));  
             }
             else
@@ -91,27 +79,30 @@ while (yn == "y")
                 MultiClubMember member2 = new MultiClubMember(lastId + 1, fullname);
                 membersList.Add(member2);
             }
-            WriteMemberListToFile(membersList);
+
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"\nNew member {membersList.Last().Name} was added.\n");
-          /*  carList.Add(CarLotApp.AddCar(isNew)); */
+            Console.ForegroundColor = ConsoleColor.White;
+
             break;
         case 2:
             // Remove Member
             
             Console.WriteLine($"\nRemove Member from Member List.");
-            int memberIdToRemove = ChooseMember(membersList);
+            int memberIdToRemove = AccessMemberList.ChooseMember(membersList);
             if (!(memberIdToRemove == 0)) // if 0 returned from ChooseMember, user wants to exit to main menu.
             { 
                 Member memberToRemove = membersList.Where(x => x.Id == memberIdToRemove).First();
                 membersList.Remove(memberToRemove);
-                Console.WriteLine($"{memberToRemove.Name} has been removed.\n");
-                WriteMemberListToFile(membersList);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"\n{memberToRemove.Name} has been removed.\n");
+                Console.ForegroundColor = ConsoleColor.White;
             }
             break;
         case 3:
             // Display Member Information
             Console.WriteLine($"\nDisplay Member Information.");
-            int memberIdToDisplay = ChooseMember(membersList);
+            int memberIdToDisplay = AccessMemberList.ChooseMember(membersList);
             if (!(memberIdToDisplay == 0)) // if 0 returned from ChooseMember, user wants to exit to main menu.
             {
                 Member member = membersList.Where(x => x.Id == memberIdToDisplay).First();
@@ -119,19 +110,16 @@ while (yn == "y")
                 {
                     SingleClubMember member2 = member as SingleClubMember;
                     Console.ForegroundColor = ConsoleColor.Blue; 
-                    Console.WriteLine($"Id:{member.Id} Name:{member.Name} Club#:{member2.GetAssignedClubId()}");
+                    Console.WriteLine($"\nId:{member.Id}  Name:{member.Name}  Club#:{member2.GetAssignedClubId()}");
                     Console.ForegroundColor = ConsoleColor.White;
                 }
                 else
                 {
                     MultiClubMember member3 = member as MultiClubMember;
                     Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine($"Id:{member.Id} Name:{member.Name} Club#:{member3.GetPoints()}");
+                    Console.WriteLine($"\nId:{member.Id}  Name:{member.Name}  Points:{member3.GetPoints()}");
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                    
-                   
-                
             }
             break;
 
@@ -140,19 +128,18 @@ while (yn == "y")
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"\nCheck in. What member would you like to check in? ");
             Console.ForegroundColor = ConsoleColor.White;
-            int checkInMemberId = ChooseMember(membersList);
+            int checkInMemberId = AccessMemberList.ChooseMember(membersList);
             if (!(checkInMemberId == 0)) // if 0 returned from ChooseMember, user wants to exit to main menu.
             {
                 Member member = membersList.Where(x => x.Id == checkInMemberId).First();
                 member.CheckIn(thisClub);
             }
-            WriteMemberListToFile(membersList);
             break;
 
         case 5:
             // Generate member Bill/Points
             Console.WriteLine($"\nGenerate Bill includings Points.");
-            int memberId = ChooseMember(membersList);
+            int memberId = AccessMemberList.ChooseMember(membersList);
             if (!(memberId == 0)) // if 0 returned from ChooseMember, user wants to exit to main menu.
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
@@ -167,157 +154,21 @@ while (yn == "y")
                     MultiClubMember member3 = member as MultiClubMember;
                     Console.WriteLine($"{member.Id} {member.Name}\nMulti-Club Member Points Accumulated: {member3.GetPoints()}\nMonthly Multi-Club Bill: $30.00");
                 }
+                Console.ForegroundColor = ConsoleColor.White;
             }
-            Console.ForegroundColor = ConsoleColor.White;
             break;
         case 6:
             yn = "n";
-            Console.WriteLine("Thank you for using Fitness Center App. Now Exiting...\n\n");
+            Console.WriteLine("\nThank you for using Fitness Center App. Now Exiting...\n\n");
             break;
         default:
-
             break;
     }
     
 }
-WriteMemberListToFile(membersList);
+Repository.WriteMemberListToFile(membersList);
 
 
-static int ChooseMember(List<Member> membersList)
-{
-    int memberId = 0;
-    bool notValid = true;
-    do
-    {
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.Write($"\nEnter member id,\n0 to see the complete list of members,\nor q to return to main menu: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        string idOrList = Console.ReadLine();
-        Console.WriteLine();
-        if (int.TryParse(idOrList, out memberId)) // if valid member id entered (i.e. its an integer and not 0, use it else ask for another.
-        {
-            if (memberId == 0)
-            {
-                DisplayMembers(membersList);
-                notValid = true;
-            }
-            else if (membersList.Contains(membersList.Where(x => x.Id == memberId).FirstOrDefault()))
-            {
-                notValid = false;
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"The member Id entered, {memberId}, does not match any members on the list. Please try again. ");
-                Console.ForegroundColor = ConsoleColor.White;
-                notValid = true;
-            }
-        }
-        else
-        {
-            if (idOrList == "q") // if user changes mind and wants to return to main menu without choosing.
-                notValid = false;
-            else
-            notValid = true; // Enter key or some non-integer was entered so need to continue loop.
-        }
-    }
-    while (notValid == true);
-    return memberId;
-}
-
-    static void DisplayMembers(List<Member> membersList)
-{
-    Console.WriteLine();
-    foreach (Member member in membersList)
-    {
-        Console.WriteLine($"{member.Id} {member.Name}");
-    }
-    Console.WriteLine();
-}
-
-static void DisplayClubList(List<Club> clubList) 
-{ 
-    foreach (Club club in clubList)
-        Console.WriteLine($"{club.id} {club.clubName}, {club.street}, {club.city}, {club.state} {club.postalCode}");
-}
-
-static int WhichClub(int thisClubId, List<Club> clubList)
-{
-    int newClubId;
-    bool notValid = true;
-    do
-    {
-        string checkClubId = Console.ReadLine();
-        if (int.TryParse(checkClubId, out newClubId)) // if valid club id entered, use it else ask for another.
-        {
-            if ((newClubId >= 1) && (newClubId <= clubList.Count))
-            {
-                thisClubId = newClubId;
-                notValid = false;
-            }
-            else
-            {
-                Console.WriteLine($"\nThe club Id entered, {newClubId}, does not match any known clubs. Please try again: ");
-                notValid = true;
-            }
-        }
-        else
-            notValid = false; // Enter or some non-integer was entered so no need to continue.
-    }
-    while (notValid == true);
-    Console.WriteLine();
-    return thisClubId;
-}
-
-static List<Member> WriteMemberListToFile(List<Member> membersList)
-{
-    string membersFile = @"C:\repos\memberlist.json";
-
-    JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
-    string json = JsonConvert.SerializeObject(membersList, settings);
-
-    File.WriteAllText(membersFile, json);
-
-    return membersList;
-}
-
-static List<Member> ReadMemberListFromFile()
-{
-    string jsonString;
-    string membersFile = @"C:\repos\memberlist.json";
-    if (!File.Exists(membersFile)) // Check if the membersFile exists or create it if it doesn't.
-    {
-        File.Create(membersFile).Close();
-        Console.WriteLine("Member file did not exist, but was created. You can now add members.\n");
-        return new List<Member>();
-    }
-    else // No need to read if the file is brand new and empty.
-    {
-        JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
-
-        List<Member> myMemberList = JsonConvert.DeserializeObject<List<Member>>(File.ReadAllText(membersFile), settings);
-
-        return myMemberList;
-    }
-}
 
 
-static int userChoice(int numChoices)
-{
-    bool parsedSuccessfully = false;
-    int userToDo = 1;
-    do
-    {
-        string userInput = Console.ReadLine();
-        parsedSuccessfully = int.TryParse(userInput, out userToDo);
-        if (!parsedSuccessfully || userToDo <= 0 || userToDo > numChoices)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Entry not valid.");
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-    }
-    while (!parsedSuccessfully);
-    Console.WriteLine();
-    return userToDo;
-}
+

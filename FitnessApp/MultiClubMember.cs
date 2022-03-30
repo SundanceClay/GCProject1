@@ -17,6 +17,9 @@ namespace FitnessApp
         public override void CheckIn(Club club)
         {
             _points++;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\nMultiClub Member {Name} is Checked In.");
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         public int GetPoints()

@@ -37,7 +37,7 @@ namespace FitnessApp
                 else 
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Member is now Checked In.");
+                    Console.WriteLine($"\nSingleClub Member {Name} is now Checked In.");
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             }
