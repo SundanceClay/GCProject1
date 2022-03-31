@@ -16,8 +16,10 @@ namespace FitnessAppTests
         {
             //Arrange 
             Club club = new Club(4, "Rochester Club", "23 Mile Road", "Rochester Hills", "Michigan", "48307");
+
             SingleClubMember single = new SingleClubMember(3, "TestingName", 1);
             SingleClubMember single2 = new SingleClubMember(4, "TestingName", 2);
+
             //Act
             single.CheckIn(club);
             //Assert
